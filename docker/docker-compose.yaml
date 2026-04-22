@@ -1,0 +1,84 @@
+services:
+  # --- Reverse Proxy ---
+  traefik:
+    image: traefik:v3.0
+    container_name: traefik
+    restart: always
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.file.filename=/etc/traefik/dynamic_conf.yaml"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
+      - "--certificatesresolvers.myresolver.acme.email=info@buf-app.it"
+      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "./certs:/certs:ro"
+      - "./dynamic_conf.yaml:/etc/traefik/dynamic_conf.yaml:ro"    
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8448:8448"
+    networks:
+      - web
+
+  # --- Database ---
+  db:
+    image: postgres:15-alpine
+    container_name: synapse_db
+    restart: always
+    environment:
+      POSTGRES_USER: synapse
+      POSTGRES_PASSWORD: "BugAppPostGres..2026!"
+      POSTGRES_DB: synapse
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --lc-collate=C --lc-ctype=C"
+    volumes:
+      - "./postgres_data:/var/lib/postgresql/data"
+    networks:
+      - backend
+
+  # --- Matrix Home Server ---
+  synapse:
+    image: matrixdotorg/synapse:latest
+    container_name: synapse
+    restart: always
+    depends_on:
+      - db
+    volumes:
+      - "./synapse_data:/data"
+    networks:
+      - web
+      - backend
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.synapse.rule=Host(`mtr.bug-app.it`)"
+      - "traefik.http.routers.synapse.entrypoints=websecure"
+      - "traefik.http.routers.synapse.tls=true"
+      #- "traefik.http.routers.synapse.tls.certresolver=myresolver"
+      - "traefik.http.services.synapse.loadbalancer.server.port=8008"
+
+  # --- Element Web Client ---
+  element:
+    image: vectorim/element-web:latest
+    container_name: element
+    restart: always
+    volumes:
+      - "./element/element-config.json:/app/config.json"
+    networks:
+      - web
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.element.rule=Host(`element.bug-app.it`)"
+      - "traefik.http.routers.element.entrypoints=websecure"
+      - "traefik.http.routers.element.tls=true"
+      #- "traefik.http.routers.element.tls.certresolver=myresolver"
+      - "traefik.http.services.element.loadbalancer.server.port=80"
+
+networks:
+  web:
+    external: false
+  backend:
+    internal: true # Isola il DB dall'esterno
