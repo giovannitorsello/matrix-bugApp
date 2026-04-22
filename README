@@ -1,0 +1,26 @@
+# matrix-bugApp 🚀
+
+Scheletro matrix+element per sperimentazione chat
+
+## 🛠 Tecnologie Utilizzate
+* **Docker** & **Docker Compose**
+* [Python/Node.js]
+* [MySQL]
+
+## 📋 Prerequisiti
+Prima di iniziare, assicurati di avere installato sul tuo sistema:
+* [Docker](https://www.docker.com/get-started)
+* [Docker Compose](https://docs.docker.com/compose/install/)
+* Modifiche al file /etc/hosts
+Inserire la riga
+127.0.0.1 mtr.bug-app.it element.bug-app.it
+
+
+## 🚀 Installazione e Avvio
+
+1. **Clona il repository**
+   ```bash
+   git clone [https://github.com/giovannitorsello/matrix-bugApp.git](https://github.com/giovannitorsello/matrix-bugApp.git)
+   cd matrix-bugApp
+   cd docker
+   docker compose up
