@@ -1,0 +1,4 @@
+subjectAltName        = DNS:mtr.bug-app.it,DNS:element.bug-app.it
+basicConstraints      = CA:FALSE
+keyUsage              = digitalSignature, keyEncipherment
+extendedKeyUsage      = serverAuth

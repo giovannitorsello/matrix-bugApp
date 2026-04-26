@@ -1,0 +1,23 @@
+FROM matrixdotorg/synapse:latest
+
+ARG DEV_UID=1000
+ARG DEV_GID=1000
+
+USER root
+
+# Creiamo la cartella se manca, poi gestiamo utente e permessi
+RUN mkdir -p /data && \
+    if getent group matrix; then \
+        groupmod -g ${DEV_GID} matrix; \
+    else \
+        groupadd -g ${DEV_GID} matrix; \
+    fi && \
+    if id -u matrix >/dev/null 2>&1; then \
+        usermod -u ${DEV_UID} -g ${DEV_GID} matrix; \
+    else \
+        useradd -u ${DEV_UID} -g ${DEV_GID} -d /data -M matrix; \
+    fi && \
+    chown -R ${DEV_UID}:${DEV_GID} /data
+
+# Ritorniamo all'utente matrix (opzionale ma consigliato)
+USER matrix

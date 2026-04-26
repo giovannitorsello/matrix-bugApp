@@ -22,23 +22,24 @@ listeners:
     type: http
     x_forwarded: true
 database:
-  name: psycopg2
+  name: sqlite3
   args:
-    user: synapse
-    password: "BugAppPostGres..2026!"
-    database: synapse
-    host: db
-    cp_min: 5
-    cp_max: 10
+    database: /data/homeserver.db
 log_config: "/data/mtr.bug-app.it.log.config"
 media_store_path: /data/media_store
-registration_shared_secret: ".k49_vF*F9lt=o.auYMgr~@8-WaE9@PBfoUyOQdMeF**&jC5#M"
-report_stats: true
-macaroon_secret_key: "HU_bK9DrEs;h@PUSkjr&1Sjxub*#0D;-bMKxpwlwTvxgyoB2HF"
-form_secret: "*F:AkkOD9K@hm,rVkzBM55HV5mEc&BMLb,y0=vDdqqW1m9~O2-"
+registration_shared_secret: "i+AMN:F.13:.R@c+j^B,x40.7GQI^7UcVnT2A0vZqw_z8Uj+mc"
+report_stats: false
+macaroon_secret_key: "hyFat:6B,Zh:O@B@kHnB9twAEG_cZi1dfJo;uokVy*zgD-FWl7"
+form_secret: "qUdq1bmgn..S4dmPx2c+=P&q8l1pwKr3eETk#:6&jEjCv;leKp"
 signing_key_path: "/data/mtr.bug-app.it.signing.key"
 trusted_key_servers:
   - server_name: "matrix.org"
 
+# Risponde direttamente al .well-known evitando il lookup esterno
+serve_client_wellknown: true
 
+# Riduce i timeout interni
+rc_login:
+  per_second: 10
+  burst_count: 10
 # vim:ft=yaml

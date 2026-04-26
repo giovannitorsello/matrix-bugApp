@@ -1,0 +1,12 @@
+FROM postgres:15-alpine
+
+ARG DEV_UID=1000
+ARG DEV_GID=1000
+RUN mkdir ./postgres_data && chown -R ${DEV_UID}:${DEV_GID} ./postgres_data
+RUN chmod 700 ./postgres_data
+RUN deluser postgres 2>/dev/null || true && \
+    delgroup postgres 2>/dev/null || true && \
+    addgroup -g ${DEV_GID} -S postgres && \
+    adduser -S -u ${DEV_UID} -G postgres -H -D postgres && \
+    mkdir -p /var/lib/postgresql /var/run/postgresql && \
+    chown -R postgres:postgres /var/lib/postgresql /var/run/postgresql

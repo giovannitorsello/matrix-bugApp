@@ -1,4 +1,31 @@
+# Generato da Makefile — non editare a mano
+http:
+  middlewares:
+    cors-matrix:
+      headers:
+        accessControlAllowOriginList:
+          - "https://element.bug-app.it"
+        accessControlAllowCredentials: true
+        accessControlAllowHeaders:
+          - "Authorization"
+          - "Content-Type"
+          - "X-Requested-With"
+        accessControlAllowMethods:
+          - "GET"
+          - "POST"
+          - "PUT"
+          - "DELETE"
+          - "OPTIONS"
+        accessControlMaxAge: 86400
+        addVaryHeader: true
+# Configurazione TLS dinamica per Traefik
+# Generato automaticamente da Makefile — non editare a mano
 tls:
   certificates:
-    - certFile: /certs/server.crt
-      keyFile: /certs/server.key
+    - certFile: certs/BugApp_dev_srv.crt
+      keyFile:  certs/BugApp_dev_srv.key
+  stores:
+    default:
+      defaultCertificate:
+        certFile: certs/BugApp_dev_srv.crt
+        keyFile:  certs/BugApp_dev_srv.key

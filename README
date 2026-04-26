@@ -22,5 +22,10 @@ Inserire la riga
    ```bash
    git clone [https://github.com/giovannitorsello/matrix-bugApp.git](https://github.com/giovannitorsello/matrix-bugApp.git)
    cd matrix-bugApp
-   cd docker
-   docker compose up
+   
+   make setup           # crea dir, certs, avvia container
+   make init-synapse    # genera homeserver.yaml (se non esiste)      
+   make create-admin    # crea utente amministratore
+   make create-user     # crea utente generico  
+
+2. Visitare https://element.bug-app.it/ 
