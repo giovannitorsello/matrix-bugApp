@@ -27,5 +27,7 @@ Inserire la riga
    make init-synapse    # genera homeserver.yaml (se non esiste)      
    make create-admin    # crea utente amministratore
    make create-user     # crea utente generico  
-
-2. Visitare https://element.bug-app.it/ 
+2. Inserire nel file /etc/hosts
+   127.0.0.1 mtr.bug-app.it element.bug-app.it
+   
+3. Visitare dal browser https://element.bug-app.it/ 
