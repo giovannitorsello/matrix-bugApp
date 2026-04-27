@@ -27,19 +27,13 @@ database:
     database: /data/homeserver.db
 log_config: "/data/mtr.bug-app.it.log.config"
 media_store_path: /data/media_store
-registration_shared_secret: "i+AMN:F.13:.R@c+j^B,x40.7GQI^7UcVnT2A0vZqw_z8Uj+mc"
+registration_shared_secret: "lIR@2Xpdpp&vBk2LrEDYOgsmNUDn,EQdFbJhf.QgbJfHCAGmS="
 report_stats: false
-macaroon_secret_key: "hyFat:6B,Zh:O@B@kHnB9twAEG_cZi1dfJo;uokVy*zgD-FWl7"
-form_secret: "qUdq1bmgn..S4dmPx2c+=P&q8l1pwKr3eETk#:6&jEjCv;leKp"
+macaroon_secret_key: "R-F@z^eVf;#pVnAMc^nCRtG@.&c&oSP3U:r#I=S_vK1PaY4S;O"
+form_secret: "w8Q^Lu+o#=-sujNcL3Wf+eYU-IIANT2,KpFFteHr:rC:lz;w+y"
 signing_key_path: "/data/mtr.bug-app.it.signing.key"
 trusted_key_servers:
   - server_name: "matrix.org"
 
-# Risponde direttamente al .well-known evitando il lookup esterno
-serve_client_wellknown: true
 
-# Riduce i timeout interni
-rc_login:
-  per_second: 10
-  burst_count: 10
 # vim:ft=yaml

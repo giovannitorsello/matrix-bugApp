@@ -19,5 +19,7 @@ RUN mkdir -p /data && \
     fi && \
     chown -R ${DEV_UID}:${DEV_GID} /data
 
+COPY config/synapse-config.json ./homeserver.yaml
+
 # Ritorniamo all'utente matrix (opzionale ma consigliato)
 USER matrix
