@@ -5,15 +5,14 @@ Scheletro matrix+element per sperimentazione chat
 ## 🛠 Tecnologie Utilizzate
 * **Docker** & **Docker Compose**
 * [Python/Node.js]
+* [Postgres]
 * [MySQL]
 
 ## 📋 Prerequisiti
 Prima di iniziare, assicurati di avere installato sul tuo sistema:
 * [Docker](https://www.docker.com/get-started)
 * [Docker Compose](https://docs.docker.com/compose/install/)
-* Modifiche al file /etc/hosts
-Inserire la riga
-127.0.0.1 mtr.bug-app.it element.bug-app.it
+
 
 
 ## 🚀 Installazione e Avvio
@@ -29,5 +28,5 @@ Inserire la riga
    make create-user     # crea utente generico  
 2. Inserire nel file /etc/hosts
    127.0.0.1 mtr.bug-app.it element.bug-app.it
-   
+
 3. Visitare dal browser https://element.bug-app.it/ 
