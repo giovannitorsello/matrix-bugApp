@@ -30,3 +30,6 @@ Prima di iniziare, assicurati di avere installato sul tuo sistema:
    127.0.0.1 mtr.bug-app.it element.bug-app.it
 
 3. Visitare dal browser https://element.bug-app.it/ 
+
+4. Per rimuovere tutto
+   make clean-all #Cancella directory di configurazione, file database, certificati
