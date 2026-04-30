@@ -3,7 +3,7 @@ services:
   traefik:
     image: traefik:v3.0
     container_name: traefik
-    restart: always
+    restart: unless-stopped
     user: "0:0"
     command:
       - "--api.insecure=true"
@@ -15,9 +15,6 @@ services:
       - "--certificatesresolvers.myresolver.acme.tlschallenge=true"      
       - "--certificatesresolvers.myresolver.acme.email=info@buf-app.it"
       - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
-      # Label per il fronted Traefik (solo sviluppo, da rimuovere in produzione)
-      - "traefik.http.routers.api.rule=Host(`traefik.bug-app.it`)"
-      - "traefik.http.routers.api.service=api@internal"
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
       - "./certs:/certs:ro"
@@ -39,7 +36,7 @@ services:
         DEV_UID: "${DEV_UID}"
         DEV_GID: "${DEV_GID}"
     container_name: synapse_db
-    restart: always
+    restart: unless-stopped
     environment:    
       POSTGRES_USER: synapse
       POSTGRES_PASSWORD: "BugAppPostGres..2026!"
@@ -60,7 +57,7 @@ services:
         DEV_UID: "${DEV_UID}"
         DEV_GID: "${DEV_GID}"
     container_name: synapse
-    restart: always
+    restart: unless-stopped
     depends_on:
       - db
     volumes:
@@ -83,17 +80,6 @@ services:
       - "traefik.http.middlewares.synapse-cors.headers.accesscontrolalloworiginlist=https://element.bug-app.it"
       - "traefik.http.middlewares.synapse-cors.headers.accesscontrolallowheaders=*"
       - "traefik.http.middlewares.synapse-cors.headers.addvaryheader=true"
-
-      #- "traefik.http.middlewares.synapse-cors.headers.accesscontrolallowmethods=GET,OPTIONS,POST,PUT,DELETE,HEADERS"
-      #- "traefik.http.middlewares.synapse-cors.headers.accesscontrolalloworiginlist=https://element.bug-app.it"
-      #- "traefik.http.middlewares.synapse-cors.headers.accesscontrolallowheaders=Origin, X-Requested-With, Content-Type, Accept, Authorization, x-access-token"
-      #- "traefik.http.middlewares.synapse-cors.headers.accesscontrolexposeheaders=*"
-      #- "traefik.http.middlewares.synapse-cors.headers.accesscontrolallowcredentials=true"
-      #- "traefik.http.middlewares.synapse-cors.headers.accesscontrolmaxage=100"
-      #- "traefik.http.middlewares.synapse-cors.headers.addvaryheader=true"         
-      #- "traefik.http.routers.synapse.tls.certresolver=myresolver"
-
-  # --- Element Web Client ---
   element:
     build:
       context: .
@@ -102,7 +88,7 @@ services:
         DEV_UID: "${DEV_UID}"
         DEV_GID: "${DEV_GID}"    
     container_name: element
-    restart: always
+    restart: unless-stopped
     volumes:
       - "./element/element-config.json:/app/config.json"
     networks:
