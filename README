@@ -33,3 +33,7 @@ Prima di iniziare, assicurati di avere installato sul tuo sistema:
 
 4. Per rimuovere tutto
    make clean-all #Cancella directory di configurazione, file database, certificati
+
+   Cambio password/reset sicurezza
+   make cheange-password-admin    # Cambio password per utenti admin
+   make change-password-user      # Cambio password per utenze non admin

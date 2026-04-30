@@ -27,10 +27,10 @@ database:
     database: /data/homeserver.db
 log_config: "/data/mtr.bug-app.it.log.config"
 media_store_path: /data/media_store
-registration_shared_secret: "lIR@2Xpdpp&vBk2LrEDYOgsmNUDn,EQdFbJhf.QgbJfHCAGmS="
+registration_shared_secret: "*WmSrE_2q56tU.WBc-+b+R4a5&gPHi,Rb=TCrQLAvsiFXg8bEq"
 report_stats: false
-macaroon_secret_key: "R-F@z^eVf;#pVnAMc^nCRtG@.&c&oSP3U:r#I=S_vK1PaY4S;O"
-form_secret: "w8Q^Lu+o#=-sujNcL3Wf+eYU-IIANT2,KpFFteHr:rC:lz;w+y"
+macaroon_secret_key: "yf*hE#NqBB~.3qZ+,uR9WE1Ai#tJW:5^jVt2KyUO2J7;I8&PW3"
+form_secret: "1~3dG&HQ7RN^8lVy0ufzVJ,MIpf.w,#MVpI-#U25e~Dh;pNw+Y"
 signing_key_path: "/data/mtr.bug-app.it.signing.key"
 trusted_key_servers:
   - server_name: "matrix.org"

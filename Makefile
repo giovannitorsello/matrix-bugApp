@@ -335,39 +335,50 @@ create-user:
 	&& printf "$(GREEN)[matrix] Utente @$$MATRIX_USER:$(MATRIX_DOMAIN) creato.$(RESET)\n" \
 	|| printf "$(RED)[matrix] Errore nella creazione utente.$(RESET)\n"
 
-delete-user:
-	@printf "$(CYAN)[matrix] Eliminazione utente Matrix...$(RESET)\n"
-	@printf "Username da eliminare: "; read MATRIX_USER; \
-	FULL_ID="@$$MATRIX_USER:$(MATRIX_DOMAIN)"; \
-	printf "$(YELLOW)[matrix] Eliminazione $$FULL_ID dal database...$(RESET)\n"; \
-	docker exec synapse_db psql -U synapse synapse -c "DELETE FROM access_tokens      WHERE user_id = '$$FULL_ID';" \
-	                                                -c "DELETE FROM refresh_tokens     WHERE user_id = '$$FULL_ID';" \
-	                                                -c "DELETE FROM devices             WHERE user_id = '$$FULL_ID';" \
-	                                                -c "DELETE FROM user_ips            WHERE user_id = '$$FULL_ID';" \
-	                                                -c "DELETE FROM pushers             WHERE user_id = '$$FULL_ID';" \
-	                                                -c "DELETE FROM user_threepids      WHERE user_id = '$$FULL_ID';" \
-	                                                -c "DELETE FROM profiles            WHERE user_id = '$$MATRIX_USER';" \
-	                                                -c "DELETE FROM user_filters        WHERE user_id = '$$FULL_ID';" \
-	                                                -c "DELETE FROM user_directory      WHERE user_id = '$$FULL_ID';" \
-	                                                -c "DELETE FROM users               WHERE name    = '$$FULL_ID';" \
-	&& printf "$(GREEN)[matrix] $$FULL_ID eliminato completamente.$(RESET)\n" \
-	|| printf "$(RED)[matrix] Errore nella eliminazione.$(RESET)\n"
 
-delete-admin:
-	@printf "$(CYAN)[matrix] Eliminazione utente admin '$(MATRIX_ADMIN_USER)'...$(RESET)\n"
-	@FULL_ID="@$(MATRIX_ADMIN_USER):$(MATRIX_DOMAIN)"; \
-	docker exec synapse_db psql -U synapse synapse -c "DELETE FROM access_tokens      WHERE user_id = '$$FULL_ID';" \
-	                                                -c "DELETE FROM refresh_tokens     WHERE user_id = '$$FULL_ID';" \
-	                                                -c "DELETE FROM devices             WHERE user_id = '$$FULL_ID';" \
-	                                                -c "DELETE FROM user_ips            WHERE user_id = '$$FULL_ID';" \
-	                                                -c "DELETE FROM pushers             WHERE user_id = '$$FULL_ID';" \
-	                                                -c "DELETE FROM user_threepids      WHERE user_id = '$$FULL_ID';" \
-	                                                -c "DELETE FROM profiles            WHERE user_id = '$(MATRIX_ADMIN_USER)';" \
-	                                                -c "DELETE FROM user_filters        WHERE user_id = '$$FULL_ID';" \
-	                                                -c "DELETE FROM user_directory      WHERE user_id = '$$FULL_ID';" \
-	                                                -c "DELETE FROM users               WHERE name    = '$$FULL_ID';" \
-	&& printf "$(GREEN)[matrix] $$FULL_ID eliminato completamente.$(RESET)\n" \
-	|| printf "$(RED)[matrix] Errore nella eliminazione.$(RESET)\n"
+change-password-user:
+	@printf "$(CYAN)[matrix] Cambio password Matrix...$(RESET)\n"
+	@printf "Username: "; read MATRIX_USER; \
+	printf "Password per $$MATRIX_USER: "; read -s MATRIX_PASSWORD; printf "\n"; \
+	SHARED_SECRET=$$(grep 'registration_shared_secret' ./docker/synapse_data/homeserver.yaml \
+		| awk '{print $$2}' | tr -d "'\""); \
+	docker exec -i synapse register_new_matrix_user \
+		--user "$$MATRIX_USER" \
+		--password "$$MATRIX_PASSWORD" \
+		--shared-secret "$$SHARED_SECRET" \
+		--no-admin \
+		--exists-ok \
+		http://localhost:8008 \
+	&& printf "$(GREEN)[matrix] Operazione completata per @$$MATRIX_USER$(RESET)\n" \
+	|| printf "$(RED)[matrix] Errore nell'aggiornamento password.$(RESET)\n"
+
+change-password-admin:
+	@printf "$(CYAN)[matrix] Cambio password Matrix...$(RESET)\n"
+	@printf "Username: "; read MATRIX_USER; \
+	printf "Password per $$MATRIX_USER: "; read -s MATRIX_PASSWORD; printf "\n"; \
+	SHARED_SECRET=$$(grep 'registration_shared_secret' ./docker/synapse_data/homeserver.yaml \
+		| awk '{print $$2}' | tr -d "'\""); \
+	docker exec -i synapse register_new_matrix_user \
+		--user "$$MATRIX_USER" \
+		--password "$$MATRIX_PASSWORD" \
+		--shared-secret "$$SHARED_SECRET" \
+		--admin \
+		--exists-ok \
+		http://localhost:8008 \
+	&& printf "$(GREEN)[matrix] Operazione completata per @$$MATRIX_USER$(RESET)\n" \
+	|| printf "$(RED)[matrix] Errore nell'aggiornamento password.$(RESET)\n"
+
+delete-user:
+	@printf "$(CYAN)[matrix] Eliminazione definitiva utente $(USER)...$(RESET)\n"
+	@if [ -z "$(USER)" ]; then printf "$(RED)Errore: specifica USER=nome$(RESET)\n"; exit 1; fi
+	@if [ -z "$(ADMIN_TOKEN)" ]; then printf "$(RED)Errore: specifica ADMIN_TOKEN=...$(RESET)\n"; exit 1; fi
+	@curl -X POST \
+		-H "Authorization: Bearer $(ADMIN_TOKEN)" \
+		-d '{"erase": true}' \
+		"http://localhost:8008/_matrix/client/v3/admin/delete_user/@$(USER):$(MATRIX_DOMAIN)" \
+	&& printf "\n$(GREEN)[matrix] Utente @$(USER) eliminato e dati puliti.$(RESET)\n" \
+	|| printf "\n$(RED)[matrix] Errore nella cancellazione.$(RESET)\n"
+
 
 # ---------------------------------------------------------------------------
 # 20.  Inizializzazione homeserver.yaml (solo se non esiste)
